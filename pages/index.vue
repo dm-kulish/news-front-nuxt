@@ -1,83 +1,115 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <v-card class="logo py-4 d-flex justify-center">
-        <NuxtLogo />
-        <VuetifyLogo />
-      </v-card>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </v-row>
+  <div id="main-page">
+    <Header />
+    <v-row id="searcher">
+      <v-col cols="4">
+        <v-text-field
+          v-model="filterKeyword"
+          placeholder="Search content"
+          autofocus
+        />
+      </v-col>
+      <v-col cols="4">
+        <v-select
+          v-model="defaultTab"
+          label="Filter by?"
+          :items="tabs"
+          variant="underlined"
+        />
+      </v-col>
+    </v-row>
+    <v-row id="posts-loader">
+      <v-progress-circular
+        v-if="!filteredPosts.length"
+        model-value="20"
+        indeterminate
+        color="blue"
+        :size="50"
+        :width="10"
+      />
+    </v-row>
+    <Posts
+      id="posts"
+      :filtered-posts="filteredPosts"
+    />
+  </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
-  name: 'IndexPage'
+  name: 'MainPage',
+
+  data () {
+    return {
+      posts: [],
+      filterKeyword: '',
+      tabs: ['all', 'tags', 'authors'],
+      defaultTab: 'all'
+    }
+  },
+  methods: {
+    ...mapActions(['fetchPosts']),
+    filterPostsByAllFields (posts) {
+      return posts
+        .filter(post =>
+          [post.author.username.toLowerCase(), post.title.toLowerCase(), post.text.toLowerCase()]
+            .some(elem => elem.includes(this.filterKeyword.toLowerCase().trim())) ||
+                post.tags
+                  .some(tag =>
+                    tag.text.toLowerCase().includes(this.filterKeyword.toLowerCase().trim())
+                  )
+        )
+    },
+    filterPostsByTags (posts) {
+      return posts
+        .filter(post =>
+          post.tags.some(tag =>
+            tag.text.toLowerCase().includes(this.filterKeyword.toLowerCase().trim())
+          )
+        )
+    },
+    filterPostsByAuthors (posts) {
+      return posts
+        .filter(post =>
+          post.author.username.toLowerCase().includes(this.filterKeyword.toLowerCase().trim())
+        )
+    }
+  },
+  computed: {
+    ...mapGetters(['allPosts']),
+    filteredPosts () {
+      if (!this.filterKeyword.trim()) { return this.posts } else {
+        switch (this.defaultTab) {
+          case 'all':
+            return this.filterPostsByAllFields(this.posts)
+          case 'tags': {
+            return this.filterPostsByTags(this.posts)
+          }
+          case 'authors':
+            return this.filterPostsByAuthors(this.posts)
+          default:
+            return this.posts
+        }
+      }
+    }
+  },
+  async created () {
+    await this.fetchPosts()
+    this.posts = this.allPosts
+  }
 }
 </script>
+
+<style scoped>
+  #searcher, #posts-loader {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  #posts-loader {
+    margin-bottom: 20px;
+  }
+
+</style>

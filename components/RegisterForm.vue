@@ -2,7 +2,7 @@
   <v-row justify="center">
     <v-dialog
       v-model="isOpenRegisterWindow"
-      @click:outside="closeForm"
+      @click:outside="updateRegisterWindow(false)"
       persistent
       width="1024"
     >
@@ -94,7 +94,7 @@
           <v-btn
             color="blue-darken-1"
             variant="text"
-            @click="closeForm"
+            @click="updateRegisterWindow(false)"
           >
             Close
           </v-btn>
@@ -113,7 +113,7 @@
 
 
 <script>
-import {mapGetters} from 'vuex';
+import {mapGetters, mapMutations} from 'vuex';
 
 export default {
   name: 'RegisterForm',
@@ -131,9 +131,10 @@ export default {
   },
 
   methods: {
-    printData() {
-      console.log(this.RegistrationForm)
-    },
+    ...mapMutations('user', ['updateRegisterWindow']),
+    // printData() {
+    //   console.log(this.RegistrationForm)
+    // },
     passwordValidator(str) {
       return /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}/g.test(str);
     },
@@ -156,13 +157,8 @@ export default {
         })
     }
     },
-
-    closeForm() {
-      this.$store.commit('updateRegisterWindow', false)
-    },
 },
-
-  computed: mapGetters(['isAuth', 'isOpenRegisterWindow']),
+  computed: mapGetters('user', ['isAuth', 'isOpenRegisterWindow']),
 }
 </script>
 

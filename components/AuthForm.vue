@@ -2,7 +2,7 @@
   <v-row justify="center">
     <v-dialog
       v-model="isOpenAuthWindow"
-      @click:outside="closeForm"
+      @click:outside="updateAuthWindow(false)"
       persistent
       width="600"
     >
@@ -36,7 +36,7 @@
           <v-btn
             color="blue-darken-1"
             variant="text"
-            @click="closeForm"
+            @click="updateAuthWindow(false)"
           >
             Close
           </v-btn>
@@ -55,7 +55,7 @@
   
   
 <script>
-import {mapGetters} from 'vuex';
+import {mapGetters, mapMutations} from 'vuex';
 
 export default {
   name: 'AuthForm',
@@ -70,25 +70,22 @@ export default {
   },
 
   methods: {
+    ...mapMutations('user', ['updateAuthWindow']),
     printData() {
       console.log(this.AuthForm)
     },
     authUser() {
       this.$store
-      .dispatch('authUser', this.AuthForm)
+      .dispatch('user/authUser', this.AuthForm)
       .then(() => {
         this.AuthForm.email = '',
         this.AuthForm.password = '',
         this.closeForm()
     })
       },
-    
-    closeForm() {
-      this.$store.commit('updateAuthWindow', false)
-    }
 
   },
-  computed: mapGetters(['isAuth', 'isOpenAuthWindow']),
+  computed: mapGetters('user', ['isAuth', 'isOpenAuthWindow']),
 
 }
   

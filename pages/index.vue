@@ -1,6 +1,5 @@
 <template>
   <div id="main-page">
-    <Header />
     <v-row id="searcher">
       <v-col cols="4">
         <v-text-field
@@ -50,7 +49,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['fetchPosts']),
+    ...mapActions('post', ['fetchPosts']),
     filterPostsByAllFields (posts) {
       return posts
         .filter(post =>
@@ -78,7 +77,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['allPosts']),
+    ...mapGetters('post', ['allPosts']),
     filteredPosts () {
       if (!this.filterKeyword.trim()) { return this.posts } else {
         switch (this.defaultTab) {
@@ -96,8 +95,8 @@ export default {
     }
   },
   async created () {
-    await this.fetchPosts()
-    this.posts = this.allPosts
+    // await this.fetchPosts()
+    // this.posts = this.allPosts
   }
 }
 </script>

@@ -153,7 +153,7 @@ import { mapActions, mapGetters } from 'vuex'
       }
     },
     methods: {
-      ...mapActions(['addPost', 'editPost', 'fetchPosts']),
+      ...mapActions(['post/addPost', 'post/editPost', 'post/fetchPosts']),
 
       add() {
         if (this.formIsValid()) {
@@ -191,6 +191,6 @@ import { mapActions, mapGetters } from 'vuex'
           this.PostForm.tags.splice(this.PostForm.tags.indexOf(item), 1);
       },
     },
-    computed: mapGetters(['isOpenPostWindow', 'allPosts', 'getCurrentEditPost'])
+    computed: mapGetters(['post/isOpenPostWindow', 'post/allPosts', 'post/getCurrentEditPost'])
   }
 </script>

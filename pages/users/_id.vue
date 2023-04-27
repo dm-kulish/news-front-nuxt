@@ -1,6 +1,5 @@
 <template>
   <div id="user-page">
-    <Header />
     <div
       v-if="id"
       id="card-and-modal"
@@ -143,7 +142,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchPosts', 'getSomeUserPosts', 'getOtherUser']),
+    ...mapActions(['post/fetchPosts', 'post/getSomeUserPosts', 'user/getOtherUser']),
     async getUserData () {
       const { username, email, avatar } = await this.getOtherUser(this.id)
       this.UserDataForm.username = username
@@ -199,7 +198,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['isOpenPostWindow', 'allPosts', 'userPosts', 'getCurrentEditPost', 'someUserPosts'])
+    ...mapGetters(['post/isOpenPostWindow', 'post/allPosts'])
   },
 
   props: ['id']

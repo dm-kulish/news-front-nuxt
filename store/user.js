@@ -1,6 +1,5 @@
 import { axios_request, BASE_URL } from '~/api/post'
-export default {
-  state: {
+export const state = () => ({
     userToken: null,
     userID: null,
     username: null,
@@ -11,9 +10,9 @@ export default {
     authWindowIsOpen: false,
     registerWindowIsOpen: false
 
-  },
+  })
 
-  actions: {
+  export const actions = {
     async createUser (ctx, regForm) {
       await axios_request
         .post('/signup/', {
@@ -76,6 +75,7 @@ export default {
 
     async getUser (ctx) {
       // const token = localStorage.getItem('token')
+      const token = ''
       if (token) {
         await axios_request.get('/me/', {
           headers: {
@@ -85,7 +85,7 @@ export default {
           .then((res) => {
             if (res.statusText === 'OK') {
               const server_data = {
-                token,
+                // token,
                 id: res.data.id,
                 username: res.data.username,
                 avatar: BASE_URL + res.data.avatar
@@ -108,9 +108,9 @@ export default {
         // todo
       }
     }
-  },
+  }
 
-  mutations: {
+  export const mutations = {
     updateUser (state, some_data) {
       state.userToken = some_data.token
       state.userID = some_data.id
@@ -126,9 +126,9 @@ export default {
       state.registerWindowIsOpen = status
     }
 
-  },
+  }
 
-  getters: {
+  export const getters = {
     isAuth (state) {
       return !!state.userToken
     },
@@ -153,4 +153,3 @@ export default {
       return state.registerWindowIsOpen
     }
   }
-}

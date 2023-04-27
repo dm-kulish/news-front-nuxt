@@ -70,11 +70,11 @@ export default {
         isEdit: true,
       })
     },
-    ...mapActions(['deletePost']),
+    ...mapActions(['post/deletePost']),
     },
   
   computed: {
-    ...mapGetters(['isAuth', 'getUserId']),
+    ...mapGetters(['user/isAuth', 'user/getUserId']),
   },
   props: ['post'],
 }

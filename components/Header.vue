@@ -8,7 +8,7 @@
 
   <v-tabs id="tabs">
     <v-tab v-show="$route.path!='/'">
-      <router-link to="/">Main Page</router-link>
+      <Nuxt-link to="/">Main Page</Nuxt-link>
     </v-tab>
   </v-tabs>
 
@@ -22,7 +22,7 @@
       color="black"
       elevation="15"
       large
-      v-on:click="openAuthForm"
+      v-on:click="updateAuthWindow(true)"
     >
       Sign In
     </v-btn>
@@ -35,7 +35,7 @@
       color="purple darken-1"
       elevation="15"
       large
-      v-on:click="openRegisterForm"
+      v-on:click="updateRegisterWindow(true)"
     >
       Sign Up
     </v-btn>
@@ -74,7 +74,7 @@
       color="teal lighten-1"
       elevation="15"
       large
-      v-on:click="logOut()"
+      v-on:click="logoutUser()"
     >
       Log Out
     </v-btn>
@@ -86,31 +86,22 @@
 
 
 <script>
-import {mapGetters} from 'vuex';
+import {mapActions, mapGetters, mapMutations} from 'vuex';
 
 
 export default {
   name: 'Header',
 
   methods: {
-    logOut() {
-      return this.$store.dispatch('logoutUser');
-    },
-
-    openAuthForm(){
-      this.$store.commit('updateAuthWindow', true);
-    },
-
-    openRegisterForm(){
-      this.$store.commit('updateRegisterWindow', true);
-    },
+    ...mapMutations('user', ['updateAuthWindow', 'updateRegisterWindow']),
+    ...mapActions('user', ['logoutUser']),
   },
 
-  async mounted() {
-    await this.$store.dispatch('getUser');
-  },
+  // async mounted() {
+  //   await this.$store.dispatch('user/getUser');
+  // },
 
-  computed: mapGetters(['isAuth', 'getUsername', 'getMyAva']),
+  computed: mapGetters('user', ['isAuth', 'getUsername', 'getMyAva']),
 }
 </script>
 

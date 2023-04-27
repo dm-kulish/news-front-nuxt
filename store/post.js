@@ -1,6 +1,6 @@
-import { axios_request } from '~/api/post'
-export default {
-  state: {
+import { axios_request } from '~/api/post';
+
+export const state = () =>  ({
     posts: [],
     postWindow: {
       isOpen: false,
@@ -8,9 +8,9 @@ export default {
     },
 
     currentPostId: 0
-  },
+  })
 
-  actions: {
+  export const actions = {
     async fetchPosts (ctx) {
       await axios_request
         .get('/posts/')
@@ -76,9 +76,9 @@ export default {
           }
         })
     }
-  },
+  }
 
-  mutations: {
+  export const mutations = {
     updatePosts (state, posts) {
       state.posts = posts
     },
@@ -95,9 +95,9 @@ export default {
     updateCurrentPost (state, id) {
       state.currentPostId = id
     }
-  },
+  }
 
-  getters: {
+  export const getters = {
     allPosts (state) {
       return state.posts
     },
@@ -110,4 +110,4 @@ export default {
       return state.posts.find(post => post.id === state.currentPostId)
     }
   }
-}
+

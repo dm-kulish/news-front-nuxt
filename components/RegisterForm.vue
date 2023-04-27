@@ -50,7 +50,10 @@
               </v-col>
             </v-row>
               <v-row>
-                <v-file-input chips multiple label="Choose your ava"
+                <v-file-input
+                  chips
+                  multiple
+                  label="Choose your ava"
                   v-model="RegistrationForm.avatar"
                   accept="image/*"
                   hint="not required"
@@ -101,7 +104,7 @@
           <v-btn
             color="blue-darken-1"
             variant="text"
-            @click="createUser"
+            @click="createAndAuth()"
           >
             Save
           </v-btn>
@@ -111,9 +114,8 @@
   </v-row>
 </template>
 
-
 <script>
-import {mapGetters, mapMutations} from 'vuex';
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 
 export default {
   name: 'RegisterForm',
@@ -125,40 +127,53 @@ export default {
         email: '',
         password: '',
         password2: '',
-        avatar: null,
-      },
+        avatar: null
+      }
     }
   },
 
   methods: {
     ...mapMutations('user', ['updateRegisterWindow']),
+    ...mapActions('user', ['createUser', 'authUser']),
     // printData() {
     //   console.log(this.RegistrationForm)
     // },
-    passwordValidator(str) {
-      return /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}/g.test(str);
+    passwordValidator (str) {
+      return /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{8,}/g.test(str)
     },
-    emailValidator(str) {
-      return /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(str);
+    emailValidator (str) {
+      // eslint-disable-next-line
+      return /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(str)
     },
-    createUser() {
-      if (this.RegistrationForm.password === this.RegistrationForm.password2
-       && this.passwordValidator(this.RegistrationForm.password) && this.emailValidator(this.RegistrationForm.email)) {
-        this.$store.dispatch('createUser', this.RegistrationForm)
-        .then(() => { 
-          this.$store.dispatch('authUser', this.RegistrationForm)})
-        .then(() => {
-          this.dialog = false
-          this.RegistrationForm.username = '',
-          this.RegistrationForm.email = '',
-          this.RegistrationForm.password = '',
-          this.RegistrationForm.password2 = '',
-          this.closeForm()
-        })
+    async createAndAuth () {
+      if (this.RegistrationForm.password === this.RegistrationForm.password2 &&
+        this.passwordValidator(this.RegistrationForm.password) && this.emailValidator(this.RegistrationForm.email)) {
+        const res = await this.createUser(this.RegistrationForm)
+        // this.createUser(this.RegistrationForm)
+        // this.$store.dispatch('user/createUser', this.RegistrationForm)
+        console.log(res)
+        // if (!res) {
+        //   await this.authUser(this.RegistrationForm)
+        //   this.RegistrationForm.username = ''
+        //   this.RegistrationForm.email = ''
+        //   this.RegistrationForm.password = ''
+        //   this.RegistrationForm.password2 = ''
+        //   this.updateRegisterWindow(false)
+        // }
+        // this.$store.dispatch('createUser', this.RegistrationForm)
+        // .then(() => {
+        //   this.$store.dispatch('authUser', this.RegistrationForm)})
+        // .then(() => {
+        //   this.dialog = false
+        //   this.RegistrationForm.username = '',
+        //   this.RegistrationForm.email = '',
+        //   this.RegistrationForm.password = '',
+        //   this.RegistrationForm.password2 = '',
+        //   this.closeForm()
+      }
     }
-    },
-},
-  computed: mapGetters('user', ['isAuth', 'isOpenRegisterWindow']),
+  },
+  computed: mapGetters('user', ['isAuth', 'isOpenRegisterWindow'])
 }
 </script>
 

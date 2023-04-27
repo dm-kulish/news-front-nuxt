@@ -14,7 +14,9 @@ export const state = () => ({
 
   export const actions = {
     async createUser (ctx, regForm) {
-      await axios_request
+      try {
+        console.log('creating', regForm)
+        const { data } = await axios_request
         .post('/signup/', {
           username: regForm.username,
           email: regForm.email,
@@ -25,6 +27,11 @@ export const state = () => ({
             'Content-Type': 'multipart/form-data'
           }
         })
+        return data
+      }
+      catch (e) {
+        return e
+      }
     },
 
     async changeUserData (ctx, changingForm) {
@@ -48,19 +55,27 @@ export const state = () => ({
     },
 
     async authUser (ctx, authForm) {
-      await axios_request
-        .post('/token/login/', {
-          email: authForm.email,
-          password: authForm.password
-        })
-        .then((res) => {
-          if (res.statusText === 'OK') {
-            // localStorage.setItem('token', res.data.access)
-          }
-        })
-        .then(() => {
-          this.dispatch('getUser')
-        })
+      try {
+        const { data } = await axios_request
+          .post('/token/login/', {
+            email: authForm.email,
+            password: authForm.password
+          })
+          console.log(data)
+          return data
+      }
+      catch (e) {
+        console.log(e)
+        return e
+      }
+        // .then((res) => {
+        //   if (res.statusText === 'OK') {
+        //     // localStorage.setItem('token', res.data.access)
+        //   }
+        // })
+        // .then(() => {
+        //   this.dispatch('getUser')
+        // })
     },
 
     logoutUser (ctx) {

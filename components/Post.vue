@@ -4,7 +4,7 @@
       <div id="left-part-card">
         <v-card-title>{{ post.title }}</v-card-title>
         <v-card-subtitle v-if="isAuth">
-          <router-link :to="{name: 'users', params: {id: post.author.id}}">{{post.author.username}}</router-link>
+          <Nuxt-link :to="{name: 'users', params: {id: post.author.id}}">{{post.author.username}}</Nuxt-link>
         </v-card-subtitle>
         <v-card-subtitle v-else>
           {{post.author.username}}
@@ -57,24 +57,23 @@
 </template>
     
 <script>
-import {mapGetters, mapActions} from 'vuex';
+import {mapGetters, mapActions, mapMutations} from 'vuex';
 
 export default {
   name: 'Post',
 
   methods: {
+    ...mapMutations('post', ['updateCurrentPost', 'updatePostWindow']),
     edit(id) {
-      this.$store.commit('updateCurrentPost', id)
-      this.$store.commit('updatePostWindow', {
-        isOpen: true,
-        isEdit: true,
-      })
+      this.updateCurrentPost(id)
+      this.updatePostWindow({isOpen: true,
+                             isEdit: true})
     },
-    ...mapActions(['post/deletePost']),
+    ...mapActions('post', ['deletePost']),
     },
   
   computed: {
-    ...mapGetters(['user/isAuth', 'user/getUserId']),
+    ...mapGetters('user', ['isAuth', 'getUserId']),
   },
   props: ['post'],
 }

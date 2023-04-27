@@ -48,6 +48,7 @@ export default {
       defaultTab: 'all'
     }
   },
+
   methods: {
     ...mapActions('post', ['fetchPosts']),
     filterPostsByAllFields (posts) {
@@ -95,8 +96,8 @@ export default {
     }
   },
   async created () {
-    // await this.fetchPosts()
-    // this.posts = this.allPosts
+    await this.fetchPosts()
+    this.posts = this.allPosts
   }
 }
 </script>

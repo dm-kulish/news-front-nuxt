@@ -55,7 +55,7 @@
       close-icon="mdi-close-outline"
       color="green"
     >
-      <router-link :to="{name: 'users', params: {id: this.$store.getters.getUserId}}">{{ getUsername }}</router-link>
+      <Nuxt-link :to="{name: 'users', params: {id: getUserId }}">{{ getUsername }}</Nuxt-link>
     </v-chip>
 
     <v-avatar
@@ -101,7 +101,7 @@ export default {
   //   await this.$store.dispatch('user/getUser');
   // },
 
-  computed: mapGetters('user', ['isAuth', 'getUsername', 'getMyAva']),
+  computed: mapGetters('user', ['isAuth', 'getUsername', 'getMyAva', 'getUserId']),
 }
 </script>
 

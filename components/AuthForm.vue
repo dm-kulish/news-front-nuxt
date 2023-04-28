@@ -71,16 +71,16 @@ export default {
 
   methods: {
     ...mapMutations('user', ['updateAuthWindow']),
-    printData() {
-      console.log(this.AuthForm)
-    },
+    // printData() {
+    //   console.log(this.AuthForm)
+    // },
     authUser() {
       this.$store
       .dispatch('user/authUser', this.AuthForm)
       .then(() => {
         this.AuthForm.email = '',
         this.AuthForm.password = '',
-        this.closeForm()
+        this.updateAuthWindow(false)
     })
       },
 

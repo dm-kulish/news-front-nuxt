@@ -149,17 +149,14 @@ export default {
       if (this.RegistrationForm.password === this.RegistrationForm.password2 &&
         this.passwordValidator(this.RegistrationForm.password) && this.emailValidator(this.RegistrationForm.email)) {
         const res = await this.createUser(this.RegistrationForm)
-        // this.createUser(this.RegistrationForm)
-        // this.$store.dispatch('user/createUser', this.RegistrationForm)
         console.log(res)
-        // if (!res) {
-        //   await this.authUser(this.RegistrationForm)
-        //   this.RegistrationForm.username = ''
-        //   this.RegistrationForm.email = ''
-        //   this.RegistrationForm.password = ''
-        //   this.RegistrationForm.password2 = ''
-        //   this.updateRegisterWindow(false)
-        // }
+        if (!res) {
+          this.RegistrationForm.username = ''
+          this.RegistrationForm.email = ''
+          this.RegistrationForm.password = ''
+          this.RegistrationForm.password2 = ''
+          this.updateRegisterWindow(false)
+        }
         // this.$store.dispatch('createUser', this.RegistrationForm)
         // .then(() => {
         //   this.$store.dispatch('authUser', this.RegistrationForm)})

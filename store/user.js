@@ -14,20 +14,21 @@ export const state = () => ({
 
   export const actions = {
     async createUser (ctx, regForm) {
+      const FD = new FormData()
+      FD.append('username', regForm.username)
+      FD.append('email', regForm.email)
+      FD.append('password', regForm.password)
+      FD.append('avatar', regForm.avatar[0])
       try {
-        console.log('creating', regForm)
+        // console.log('creating', regForm)
         const { data } = await axios_request
-        .post('/signup/', {
-          username: regForm.username,
-          email: regForm.email,
-          password: regForm.password,
-          avatar: regForm.avatar ? regForm.avatar[0] : ''
-        }, {
+        .post('/signup/', FD, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         })
-        return data
+        ctx.commit('updateUser', data)
+        this.dispatch('user/authUser', data)
       }
       catch (e) {
         return e
@@ -61,21 +62,14 @@ export const state = () => ({
             email: authForm.email,
             password: authForm.password
           })
-          console.log(data)
-          return data
+          ctx.commit('updateUser', { token: data.access })
+          localStorage.setItem('token', data.access)
+          this.dispatch('user/getUser', data.access)
       }
       catch (e) {
         console.log(e)
         return e
       }
-        // .then((res) => {
-        //   if (res.statusText === 'OK') {
-        //     // localStorage.setItem('token', res.data.access)
-        //   }
-        // })
-        // .then(() => {
-        //   this.dispatch('getUser')
-        // })
     },
 
     logoutUser (ctx) {
@@ -88,13 +82,13 @@ export const state = () => ({
       ctx.commit('updateUser', null_data)
     },
 
-    async getUser (ctx) {
+    async getUser (ctx, token=localStorage.getItem('token')) {
       // const token = localStorage.getItem('token')
-      const token = ''
+      // const token = ''
       if (token) {
         await axios_request.get('/me/', {
           headers: {
-            // Authorization: 'Token ' + token
+            Authorization: 'Token ' + token
           }
         })
           .then((res) => {
@@ -127,10 +121,10 @@ export const state = () => ({
 
   export const mutations = {
     updateUser (state, some_data) {
-      state.userToken = some_data.token
-      state.userID = some_data.id
-      state.username = some_data.username
-      state.avatar = some_data.avatar
+      state.userToken = some_data.token || null
+      state.userID = some_data.id || state.userID
+      state.username = some_data.username || state.username
+      state.avatar = some_data.avatar || state.avatar
     },
 
     updateAuthWindow (state, status) {

@@ -39,7 +39,7 @@ import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'MainPage',
-
+  // middleware: 'checkAuth',
   data () {
     return {
       posts: [],
@@ -51,6 +51,7 @@ export default {
 
   methods: {
     ...mapActions('post', ['fetchPosts']),
+    ...mapActions('user', ['getUser']),
     filterPostsByAllFields (posts) {
       return posts
         .filter(post =>
@@ -95,9 +96,13 @@ export default {
       }
     }
   },
+  async fetch() {
+    
+  },
   async created () {
     await this.fetchPosts()
     this.posts = this.allPosts
+    if (localStorage.getItem('token')) await this.getUser()
   }
 }
 </script>

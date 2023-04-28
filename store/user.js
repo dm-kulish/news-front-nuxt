@@ -1,6 +1,6 @@
 import { axios_request, BASE_URL } from '~/api/post'
 export const state = () => ({
-    userToken: null,
+    // userToken: null,
     userID: null,
     username: null,
     avatar: null,
@@ -75,7 +75,7 @@ export const state = () => ({
     logoutUser (ctx) {
       // localStorage.removeItem('token')
       const null_data = {
-        token: null,
+        // token: null,
         id: null,
         username: null
       }
@@ -121,7 +121,7 @@ export const state = () => ({
 
   export const mutations = {
     updateUser (state, some_data) {
-      state.userToken = some_data.token || null
+      // state.userToken = some_data.token || null
       state.userID = some_data.id || state.userID
       state.username = some_data.username || state.username
       state.avatar = some_data.avatar || state.avatar
@@ -139,7 +139,8 @@ export const state = () => ({
 
   export const getters = {
     isAuth (state) {
-      return !!state.userToken
+     if (typeof window !== 'undefined') return !!localStorage.getItem('token')
+     else return false
     },
 
     getUsername (state) {

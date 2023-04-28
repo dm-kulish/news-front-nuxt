@@ -1,4 +1,5 @@
 <template>
+  <client-only> 
   <v-app-bar
     id="head"
     app
@@ -82,6 +83,7 @@
   </div>
 
   </v-app-bar>
+  </client-only>
 </template>
 
 
